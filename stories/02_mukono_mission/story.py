@@ -1,5 +1,4 @@
 """The Mukono Mission: a forgotten flash drive and a transport decision.
-Run: python3 story.py. Fares and distances are invented teaching values.
 """
 from abc import ABC, abstractmethod
 
@@ -101,6 +100,19 @@ class Journey:
             self._legs.append(transport)
             return f"{self.student} travels by {transport.name}: UGX {fare:,}."
         return f"{self.student}: not enough money for {transport.name}."
+
+
+    # Extension 5 (Trip diary): read-only summary of the journey so far.
+    # It reads only _legs (completed trips) and the purse balance, so refused
+    # attempts are never counted and no money is spent or changed.
+    def diary(self):
+        money = f"Money left: UGX {self.purse.balance:,}."
+        if not self._legs:
+            return f"{self.student}'s diary: no completed legs. {money}"
+        names = ", ".join(leg.name for leg in self._legs)
+        return (f"{self.student}'s diary: {names}. "
+                f"Completed legs: {self.completed_legs}. {money}")
+
 
 
 def compare(options, distance):  # Function, parameter, loop: Week 1 tools.
