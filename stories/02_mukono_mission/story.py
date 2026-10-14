@@ -25,6 +25,14 @@ class TripPurse:
         self.balance = self.balance - fare
         return True
 
+##Extension 2: Transport money top-up
+    def top_up(self, amount):
+        "A positive amount increases the balance and returns True. Zero or a negative amount returns False"
+        "without changing the balance. Using self.balance also keeps the existing property validation in effect."
+        if amount <= 0:
+            return False
+        self.balance = self.balance + amount
+        return True 
 
 # ACT 2: All transport must quote a fare, but the calculation can differ.
 class Transport(ABC):
