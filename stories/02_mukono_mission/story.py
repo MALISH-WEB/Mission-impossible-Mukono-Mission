@@ -116,19 +116,31 @@ def compare(options, distance):  # Function, parameter, loop: Week 1 tools.
         print(option.describe())
         print(f"Quote: UGX {option.quote_fare(distance):,}")  # Polymorphism.
 
+#extension 3:adding cousin lift which is for free and has a different description
+class CousinLift:
+    def __init__(self, name):
+        self.name = name
+
+    def describe(self):
+        return f"{self.name} is giving you a free lift."
+
+    def quote_fare(self, distance):
+        return 0  # Free lift, no fare charged.
 
 def main():
     print("=== THE MUKONO MISSION ===")
     print("Amina left her flash drive in town. Her presentation is today!")
     options = [Boda("Kato"), Taxi("Mukono taxi"),
-               CheerfulStudentBoda("Nambi"), WalkWithFriend()]
+               CheerfulStudentBoda("Nambi"), WalkWithFriend(), CousinLift("Moris")]
     compare(options, 3)  # The walk works without inheriting Transport.
     amina = Journey("Amina", 5000)
     peter = Journey("Peter", 2000)  # Independent object state.
+    print(amina.travel(options[4], 5))  # Cousin lift: free.
     print(amina.travel(options[2], 3))  # Student boda: 2500.
     print(amina.travel(options[1], 3))  # Swap the part: taxi back, 2000.
     print(amina.travel(options[0], 3))  # Refused, only 500 left.
     print(peter.travel(options[3], 3))
+
     print(f"Amina: UGX {amina.purse.balance:,}; legs: {amina.completed_legs}")
     print(f"Peter: UGX {peter.purse.balance:,}; legs: {peter.completed_legs}")
     print("MRO (look left to right):")
