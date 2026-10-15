@@ -63,6 +63,13 @@ class Taxi(Transport):  # Sibling classes: hierarchical inheritance.
         return 2000  # Flat classroom fare for this short route.
 
 
+# EXTENSION 1: Shuttle IS-A Transport, so compare() and Journey.travel()
+# can use it without any change. It charges one flat fare of UGX 1,500.
+class Shuttle(Transport):
+    def quote_fare(self, distance):
+        return 1500  # Flat classroom fare for any positive distance.
+
+
 class StudentBoda(Boda):  # Transport -> Boda -> StudentBoda: multilevel.
     def quote_fare(self, distance):
         return max(1000, super().quote_fare(distance) - 500)
