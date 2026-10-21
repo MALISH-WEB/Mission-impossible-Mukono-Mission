@@ -136,5 +136,105 @@ def main():
     print("Ending: flash drive recovered. The slides live to present another day.")
 
 
+
+
+@staticmethod
+    def _choice_record(choice):
+        choice_info = _CHOICE_FIELDS.get(type(choice))
+        if choice_info is None:
+            raise ValueError(f"Unsupported choice type: {type(choice).__name__}.")
+        label, fields = choice_info
+        record = {"type": label}
+        for field in fields:
+            value = getattr(choice, field)
+            if not isinstance(value, str) or not value:
+                raise ValueError(f"Choice field '{field}' must be a non-empty string.")
+            record[field] = value
+        return record
+
+    @staticmethod
+    def _choice_from_record(record):
+        if type(record) is not dict:
+            raise ValueError("Each history entry must be a JSON object.")
+        label = record.get("type")
+        try:
+            choice_class, fields = _CHOICE_BUILDERS[label]
+        except (KeyError, TypeError) as error:
+            raise ValueError(f"Unknown choice type label: {label!r}.") from error
+        if set(record) != {"type", *fields}:
+            raise ValueError(f"Invalid fields for choice type '{label}'.")
+        values = {}
+        for field in fields:
+            value = record[field]
+            if not isinstance(value, str) or not value:
+                raise ValueError(f"Choice field '{field}' must be a non-empty string.")
+            values[field] = value
+        return choice_class(**values)
+
+    def save(self, path):
+        if not isinstance(self.student, str) or not self.student:
+            raise ValueError("Student name must be a non-empty string to save a journey.")
+        balance = self.purse.balance
+        if type(balance) is not int or balance < 0:
+            raise ValueError("Remaining UGX must be a non-negative whole number.")
+        if type(self._legs) is not list:
+            raise ValueError("Journey history must be a list of successful choices.")
+        data = {
+            "version": 1,
+            "student": self.student,
+            "remaining_ugx": balance,
+            "history": [self._choice_record(choice) for choice in self._legs],
+        }
+        with open(path, "w", encoding="utf-8") as save_file:
+            json.dump(data, save_file, indent=2)
+
+    @classmethod
+    def load(cls, path):
+        try:
+            with open(path, "r", encoding="utf-8") as save_file:
+                data = json.load(save_file)
+        except FileNotFoundError as error:
+            raise ValueError(f"Journey save file not found: {path}") from error
+        except (json.JSONDecodeError, UnicodeDecodeError) as error:
+            raise ValueError(f"Journey save file is not valid JSON: {path}") from error
+
+        expected_keys = {"version", "student", "remaining_ugx", "history"}
+        if type(data) is not dict or set(data) != expected_keys:
+            raise ValueError("Journey save must contain version, student, remaining_ugx, and history.")
+        if type(data["version"]) is not int or data["version"] != 1:
+            raise ValueError("Unsupported journey save version.")
+        student = data["student"]
+        if not isinstance(student, str) or not student:
+            raise ValueError("Saved student name must be a non-empty string.")
+        balance = data["remaining_ugx"]
+        if type(balance) is not int or balance < 0:
+            raise ValueError("Saved remaining_ugx must be a non-negative whole number.")
+        history = data["history"]
+        if type(history) is not list:
+            raise ValueError("Saved history must be a list.")
+
+        restored_legs = [cls._choice_from_record(record) for record in history]
+        restored_journey = cls(student, balance)
+        restored_journey._legs = restored_legs
+        restored_journey.transport = restored_legs[-1] if restored_legs else None
+        return restored_journey
+
+
+_CHOICE_FIELDS = {
+    Boda: ("boda", ("rider",)),
+    Taxi: ("taxi", ("name",)),
+    Shuttle: ("shuttle", ("name",)),
+    StudentBoda: ("student_boda", ("rider",)),
+    CheerfulStudentBoda: ("cheerful_student_boda", ("rider",)),
+    WalkWithFriend: ("walk_with_friend", ()),
+    CousinLift: ("cousin_lift", ("name",)),
+}
+_CHOICE_BUILDERS = {
+    label: (choice_class, fields)
+    for choice_class, (label, fields) in _CHOICE_FIELDS.items()
+}
+
+
+
 if __name__ == "__main__":
     main()
