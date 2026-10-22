@@ -1,5 +1,4 @@
 """The Mukono Mission: a forgotten flash drive and a transport decision.
-Run: python3 story.py. Fares and distances are invented teaching values.
 """
 from abc import ABC, abstractmethod
 
@@ -25,6 +24,14 @@ class TripPurse:
         self.balance = self.balance - fare
         return True
 
+##Extension 2: Transport money top-up
+    def top_up(self, amount):
+        "A positive amount increases the balance and returns True. Zero or a negative amount returns False"
+        "without changing the balance. Using self.balance also keeps the existing property validation in effect."
+        if amount <= 0:
+            return False
+        self.balance = self.balance + amount
+        return True 
 
 # ACT 2: All transport must quote a fare, but the calculation can differ.
 class Transport(ABC):
@@ -53,6 +60,13 @@ class Boda(Transport):  # IS-A Transport: single inheritance.
 class Taxi(Transport):  # Sibling classes: hierarchical inheritance.
     def quote_fare(self, distance):
         return 2000  # Flat classroom fare for this short route.
+
+
+# EXTENSION 1: Shuttle IS-A Transport, so compare() and Journey.travel()
+# can use it without any change. It charges one flat fare of UGX 1,500.
+class Shuttle(Transport):
+    def quote_fare(self, distance):
+        return 1500  # Flat classroom fare for any positive distance.
 
 
 class StudentBoda(Boda):  # Transport -> Boda -> StudentBoda: multilevel.
@@ -101,6 +115,19 @@ class Journey:
             self._legs.append(transport)
             return f"{self.student} travels by {transport.name}: UGX {fare:,}."
         return f"{self.student}: not enough money for {transport.name}."
+
+
+    # Extension 5 (Trip diary): read-only summary of the journey so far.
+    # It reads only _legs (completed trips) and the purse balance, so refused
+    # attempts are never counted and no money is spent or changed.
+    def diary(self):
+        money = f"Money left: UGX {self.purse.balance:,}."
+        if not self._legs:
+            return f"{self.student}'s diary: no completed legs. {money}"
+        names = ", ".join(leg.name for leg in self._legs)
+        return (f"{self.student}'s diary: {names}. "
+                f"Completed legs: {self.completed_legs}. {money}")
+
 
 
 def compare(options, distance):  # Function, parameter, loop: Week 1 tools.
