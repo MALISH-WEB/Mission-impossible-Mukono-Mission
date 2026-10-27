@@ -1,6 +1,6 @@
-"""The Mukono Mission: a forgotten flash drive and a transport decision.
-Run: python3 story.py. Fares and distances are invented teaching values.
+"""The Mukono mission: a forgotten flash drive and a transport decision.
 """
+import json
 from abc import ABC, abstractmethod
 
 
@@ -25,7 +25,7 @@ class TripPurse:
         self.balance = self.balance - fare
         return True
 
-##Extension 2: Transport money top-up
+    # Extension 2: Transport money top-up
     def top_up(self, amount):
         "A positive amount increases the balance and returns True. Zero or a negative amount returns False"
         "without changing the balance. Using self.balance also keeps the existing property validation in effect."
@@ -33,6 +33,7 @@ class TripPurse:
             return False
         self.balance = self.balance + amount
         return True 
+
 
 # ACT 2: All transport must quote a fare, but the calculation can differ.
 class Transport(ABC):
@@ -61,6 +62,13 @@ class Boda(Transport):  # IS-A Transport: single inheritance.
 class Taxi(Transport):  # Sibling classes: hierarchical inheritance.
     def quote_fare(self, distance):
         return 2000  # Flat classroom fare for this short route.
+
+
+# EXTENSION 1: Shuttle IS-A Transport, so compare() and Journey.travel()
+# can use it without any change. It charges one flat fare of UGX 1,500.
+class Shuttle(Transport):
+    def quote_fare(self, distance):
+        return 1500  # Flat classroom fare for any positive distance.
 
 
 class StudentBoda(Boda):  # Transport -> Boda -> StudentBoda: multilevel.
@@ -110,11 +118,136 @@ class Journey:
             return f"{self.student} travels by {transport.name}: UGX {fare:,}."
         return f"{self.student}: not enough money for {transport.name}."
 
+    # Extension 5 (Trip diary): read-only summary of the journey so far.
+    # It reads only _legs (completed trips) and the purse balance, so refused
+    # attempts are never counted and no money is spent or changed.
+    def diary(self):
+        money = f"Money left: UGX {self.purse.balance:,}."
+        if not self._legs:
+            return f"{self.student}'s diary: no completed legs. {money}"
+        names = ", ".join(leg.name for leg in self._legs)
+        return (f"{self.student}'s diary: {names}. "
+                f"Completed legs: {self.completed_legs}. {money}")
+
+    # Extension A3 (Save and continue later): plain-data JSON round trip.
+    @staticmethod
+    def _choice_record(choice):
+        choice_info = _CHOICE_FIELDS.get(type(choice))
+        if choice_info is None:
+            raise ValueError(f"Unsupported choice type: {type(choice).__name__}.")
+        label, fields = choice_info
+        record = {"type": label}
+        for field in fields:
+            value = getattr(choice, field)
+            if not isinstance(value, str) or not value:
+                raise ValueError(f"Choice field '{field}' must be a non-empty string.")
+            record[field] = value
+        return record
+
+    @staticmethod
+    def _choice_from_record(record):
+        if type(record) is not dict:
+            raise ValueError("Each history entry must be a JSON object.")
+        label = record.get("type")
+        try:
+            choice_class, fields = _CHOICE_BUILDERS[label]
+        except (KeyError, TypeError) as error:
+            raise ValueError(f"Unknown choice type label: {label!r}.") from error
+        if set(record) != {"type", *fields}:
+            raise ValueError(f"Invalid fields for choice type '{label}'.")
+        values = {}
+        for field in fields:
+            value = record[field]
+            if not isinstance(value, str) or not value:
+                raise ValueError(f"Choice field '{field}' must be a non-empty string.")
+            values[field] = value
+        return choice_class(**values)
+
+    def save(self, path):
+        if not isinstance(self.student, str) or not self.student:
+            raise ValueError("Student name must be a non-empty string to save a journey.")
+        balance = self.purse.balance
+        if type(balance) is not int or balance < 0:
+            raise ValueError("Remaining UGX must be a non-negative whole number.")
+        if type(self._legs) is not list:
+            raise ValueError("Journey history must be a list of successful choices.")
+        data = {
+            "version": 1,
+            "student": self.student,
+            "remaining_ugx": balance,
+            "history": [self._choice_record(choice) for choice in self._legs],
+        }
+        with open(path, "w", encoding="utf-8") as save_file:  # After all checks.
+            json.dump(data, save_file, indent=2)
+
+    @classmethod
+    def load(cls, path):
+        try:
+            with open(path, "r", encoding="utf-8") as save_file:
+                data = json.load(save_file)
+        except FileNotFoundError:
+            raise  # A missing file is reported as FileNotFoundError.
+        except (json.JSONDecodeError, UnicodeDecodeError) as error:
+            raise ValueError(f"Journey save file is not valid JSON: {path}") from error
+
+        expected_keys = {"version", "student", "remaining_ugx", "history"}
+        if type(data) is not dict or set(data) != expected_keys:
+            raise ValueError("Journey save must contain version, student, remaining_ugx, and history.")
+        if type(data["version"]) is not int or data["version"] != 1:
+            raise ValueError("Unsupported journey save version.")
+        student = data["student"]
+        if not isinstance(student, str) or not student:
+            raise ValueError("Saved student name must be a non-empty string.")
+        balance = data["remaining_ugx"]
+        if type(balance) is not int or balance < 0:
+            raise ValueError("Saved remaining_ugx must be a non-negative whole number.")
+        history = data["history"]
+        if type(history) is not list:
+            raise ValueError("Saved history must be a list.")
+
+        restored_legs = [cls._choice_from_record(record) for record in history]
+        restored_journey = cls(student, balance)  # New Journey, fresh purse.
+        restored_journey._legs = restored_legs
+        restored_journey.transport = restored_legs[-1] if restored_legs else None
+        return restored_journey
+
+    save_json = save  # Names used by the A3 demo.
+    load_json = load
+
 
 def compare(options, distance):  # Function, parameter, loop: Week 1 tools.
     for option in options:
         print(option.describe())
         print(f"Quote: UGX {option.quote_fare(distance):,}")  # Polymorphism.
+
+
+# Extension 3: adding cousin lift which is for free and has a different description
+class CousinLift:
+    def __init__(self, name):
+        self.name = name
+
+    def describe(self):
+        return f"{self.name} is giving you a free lift."
+
+    def quote_fare(self, distance):
+        return 0  # Free lift, no fare charged.
+
+
+# Extension A3: fixed table of choices that may be saved and rebuilt.
+# Labels come from this table only; nothing in a file is ever executed.
+_CHOICE_FIELDS = {
+    Boda: ("boda", ("rider",)),
+    Taxi: ("taxi", ("name",)),
+    Shuttle: ("shuttle", ("name",)),
+    StudentBoda: ("student_boda", ("rider",)),
+    CheerfulStudentBoda: ("cheerful_student_boda", ("rider",)),
+    WalkWithFriend: ("walk_with_friend", ()),
+    CousinLift: ("cousin_lift", ("name",)),
+}
+_CHOICE_BUILDERS = {
+    label: (choice_class, fields)
+    for choice_class, (label, fields) in _CHOICE_FIELDS.items()
+}
 
 
 def main():
@@ -129,6 +262,7 @@ def main():
     print(amina.travel(options[1], 3))  # Swap the part: taxi back, 2000.
     print(amina.travel(options[0], 3))  # Refused, only 500 left.
     print(peter.travel(options[3], 3))
+
     print(f"Amina: UGX {amina.purse.balance:,}; legs: {amina.completed_legs}")
     print(f"Peter: UGX {peter.purse.balance:,}; legs: {peter.completed_legs}")
     print("MRO (look left to right):")
