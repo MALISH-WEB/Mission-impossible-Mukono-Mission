@@ -2,9 +2,9 @@
 
 Copy this file to `GROUP.md` in the root of the group fork. If your group already has that file, add the later-topic section without deleting earlier evidence.
 
-- Group number / catch-up label:
-- Story:
-- Group fork URL:
+- Group number / catch-up label: Mission Impossible
+- Story: Mukono Mission
+- Group fork URL: https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission
 - Final branch: `main`
 - Deadline: end of Wednesday, 21 October 2026, Uganda time
 
@@ -19,9 +19,7 @@ Keep only the rows your group needs. Original groups have five or six members; c
 | Member 3 | | | | | | | |
 | Member 4 | | | | | | | |
 | Member 5 | | | | | | | |
-| Member 6 | | | | | | | |
-| Member 7 | | | | | | | |
-| Member 8 | | | | | | | |
+
 
 ## Three later-topic choices
 
