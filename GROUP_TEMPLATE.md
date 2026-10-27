@@ -2,9 +2,9 @@
 
 Copy this file to `GROUP.md` in the root of the group fork. If your group already has that file, add the later-topic section without deleting earlier evidence.
 
-- Group number / catch-up label: Mission Impossible
-- Story: Mukono Mission
-- Group fork URL: https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission
+- Group number / catch-up label:
+- Story:
+- Group fork URL:
 - Final branch: `main`
 - Deadline: end of Wednesday, 21 October 2026, Uganda time
 
@@ -14,9 +14,9 @@ Keep only the rows your group needs. Original groups have five or six members; c
 
 | Full name | Access number | Registration number | GitHub username | Foundation task | Personal branch | Commit link(s) | Merged foundation PR |
 |---|---|---|---|---|---|---|---|
-| Wagonda Francis Precious | B33245 | M25B13/038 | franciswagonda  | Extension 1: Student Shuttle | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/tree/WAGONDA-FRANCIS-PRECIOUS-B33245 | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/commits/WAGONDA-FRANCIS-PRECIOUS-B33245/ | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/1 |
-| Kasozi Joel | B33494 | M25B13/051 | KasoziJoel | Extension 4: Cheapest ride | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/tree/joel-B33494 | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/commits/joel-B33494/ | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/4 |
-| Malish Emmanuel Abui | B33239 | M25B13/032 | MALISH-WEB | Extension 5: Trip diary (Journey.diary) | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/tree/MALISH-EMMANUEL-ABUI-B33239-M25B13/032 | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/commits/MALISH-EMMANUEL-ABUI-B33239-M25B13/032/ | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/7 |
+| Member 1 | | | | | | | |
+| Member 2 | | | | | | | |
+| Member 3 | | | | | | | |
 | Member 4 | | | | | | | |
 | Member 5 | | | | | | | |
 
