@@ -14,7 +14,7 @@ Keep only the rows your group needs. Original groups have five or six members; c
 
 | Full name | Access number | Registration number | GitHub username | Foundation task | Personal branch | Commit link(s) | Merged foundation PR |
 |---|---|---|---|---|---|---|---|
-| Member 1 | | | | | | | |
+| Wagonda Francis Precious | B33245 | M25B13/038 | franciswagonda  | Extension 1: Student Shuttle | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/tree/WAGONDA-FRANCIS-PRECIOUS-B33245 | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/commits/WAGONDA-FRANCIS-PRECIOUS-B33245/ | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/1 |
 | Kasozi Joel| B33494|M25B13/051|KasoziJoel| https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/blob/main/demo-Joel-B33494.py|github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/tree/joel-B33494 | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/blob/main/A1-b33494.pyhttps://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/blob/main/demo-Joel-B33494.py| https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/4|
 | Member 3 | | | | | | | |
 | Member 4 | | | | | | | |
