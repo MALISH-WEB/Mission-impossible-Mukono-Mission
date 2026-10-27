@@ -15,7 +15,7 @@ Keep only the rows your group needs. Original groups have five or six members; c
 | Full name | Access number | Registration number | GitHub username | Foundation task | Personal branch | Commit link(s) | Merged foundation PR |
 |---|---|---|---|---|---|---|---|
 | Member 1 | | | | | | | |
-| Member 2 | | | | | | | |
+| Member 2 | Kasozi Joel| B33494|M25B13/051|KasoziJoel| | | |
 | Member 3 | | | | | | | |
 | Member 4 | | | | | | | |
 | Member 5 | | | | | | | |
