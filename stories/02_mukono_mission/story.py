@@ -1,4 +1,4 @@
-"""The Mukono Mission: a forgotten flash drive and a transport decision.
+"""The Mukono mission: a forgotten flash drive and a transport decision.
 """
 from abc import ABC, abstractmethod
 
@@ -24,7 +24,7 @@ class TripPurse:
         self.balance = self.balance - fare
         return True
 
-##Extension 2: Transport money top-up
+    # Extension 2: Transport money top-up
     def top_up(self, amount):
         "A positive amount increases the balance and returns True. Zero or a negative amount returns False"
         "without changing the balance. Using self.balance also keeps the existing property validation in effect."
@@ -32,6 +32,7 @@ class TripPurse:
             return False
         self.balance = self.balance + amount
         return True 
+
 
 # ACT 2: All transport must quote a fare, but the calculation can differ.
 class Transport(ABC):
@@ -116,7 +117,6 @@ class Journey:
             return f"{self.student} travels by {transport.name}: UGX {fare:,}."
         return f"{self.student}: not enough money for {transport.name}."
 
-
     # Extension 5 (Trip diary): read-only summary of the journey so far.
     # It reads only _legs (completed trips) and the purse balance, so refused
     # attempts are never counted and no money is spent or changed.
@@ -129,13 +129,13 @@ class Journey:
                 f"Completed legs: {self.completed_legs}. {money}")
 
 
-
 def compare(options, distance):  # Function, parameter, loop: Week 1 tools.
     for option in options:
         print(option.describe())
         print(f"Quote: UGX {option.quote_fare(distance):,}")  # Polymorphism.
 
-#extension 3:adding cousin lift which is for free and has a different description
+
+# Extension 3: adding cousin lift which is for free and has a different description
 class CousinLift:
     def __init__(self, name):
         self.name = name
@@ -145,6 +145,7 @@ class CousinLift:
 
     def quote_fare(self, distance):
         return 0  # Free lift, no fare charged.
+
 
 def main():
     print("=== THE MUKONO MISSION ===")
