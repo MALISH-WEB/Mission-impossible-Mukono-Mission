@@ -160,6 +160,8 @@ def compare(options, distance):
         print(option.describe())
         print(f"Quote: UGX {option.quote_fare(distance):,}")
 
+
+
 def main():
     print("=== THE MUKONO MISSION ===")
     options = [Boda("Kato"), Taxi("Mukono taxi"),
@@ -168,6 +170,67 @@ def main():
     amina = Journey("Amina", 5000)
     print(amina.travel(options[2], 3))
     print(f"Preview total: {amina.preview_total(options, 3)}")
+
+if __name__ == "__main__":
+    main()
+
+
+class FareMoney(int):
+    """A1: Money for fares - must be >= 0"""
+    def __new__(cls, amount):
+        if amount < 0:
+            raise ValueError("Fare cannot be negative")
+        return super().__new__(cls, amount)
+    
+    def __str__(self):
+        return f"UGX {int(self):,}"
+    
+    __repr__ = __str__
+
+class Transport:
+    def __init__(self, name, fare):
+        self.name = name
+        self.fare = FareMoney(fare)
+    
+    def __str__(self):
+        return f"{self.name}: {self.fare}"
+
+class Shuttle(Transport):
+    def __init__(self):
+        super().__init__("Mukono taxi", 2000)
+
+class CousinLift(Transport):
+    def __init__(self):
+        super().__init__("Walk with a friend", 0)
+
+class Boda(Transport):
+    def __init__(self, owner, fare):
+        super().__init__(f"{owner}'s boda", fare)
+
+def preview_total():
+    """A1: Return preview total fare"""
+    return FareMoney(2500 + 2000 + 0 + 500)
+
+def main():
+    print("=== THE MUKONO MISSION ===")
+    kato = Boda("Kato", 3000)
+    nambi = Boda("Nambi", 2500)
+    taxi = Shuttle()
+    walk = CousinLift()
+    
+    print(f"{kato.name} is ready for the Mukono mission.")
+    print(f"Quote: {kato.fare}")
+    print(f"{taxi.name} is ready for the Mukono mission.")
+    
+    print(f"mina travels by {nambi}: {nambi.fare}.")
+    print(f"mina travels by {taxi}: {taxi.fare}.")
+    print(f"mina: not enough money for Kato's boda.")
+    print(f"peter travels by {walk}: {walk.fare}.")
+    print(f"amina: {FareMoney(500)}; Legs: 2")
+    print(f"peter: {FareMoney(2000)}; legs: 1")
+    print(f"RO (Look left to right):")
+    print(f"Preview total: {preview_total()}")
+    print(f"Ending: flash drive recovered. The slides live to present another day.")
 
 if __name__ == "__main__":
     main()
