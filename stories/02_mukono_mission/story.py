@@ -1,5 +1,6 @@
 """The Mukono mission: a forgotten flash drive and a transport decision.
 """
+import json
 from abc import ABC, abstractmethod
 
 
@@ -128,50 +129,8 @@ class Journey:
         return (f"{self.student}'s diary: {names}. "
                 f"Completed legs: {self.completed_legs}. {money}")
 
-
-def compare(options, distance):  # Function, parameter, loop: Week 1 tools.
-    for option in options:
-        print(option.describe())
-        print(f"Quote: UGX {option.quote_fare(distance):,}")  # Polymorphism.
-
-
-# Extension 3: adding cousin lift which is for free and has a different description
-class CousinLift:
-    def __init__(self, name):
-        self.name = name
-
-    def describe(self):
-        return f"{self.name} is giving you a free lift."
-
-    def quote_fare(self, distance):
-        return 0  # Free lift, no fare charged.
-
-
-def main():
-    print("=== THE MUKONO MISSION ===")
-    print("Amina left her flash drive in town. Her presentation is today!")
-    options = [Boda("Kato"), Taxi("Mukono taxi"),
-               CheerfulStudentBoda("Nambi"), WalkWithFriend(), CousinLift("Moris")]
-    compare(options, 3)  # The walk works without inheriting Transport.
-    amina = Journey("Amina", 5000)
-    peter = Journey("Peter", 2000)  # Independent object state.
-    print(amina.travel(options[4], 5))  # Cousin lift: free.
-    print(amina.travel(options[2], 3))  # Student boda: 2500.
-    print(amina.travel(options[1], 3))  # Swap the part: taxi back, 2000.
-    print(amina.travel(options[0], 3))  # Refused, only 500 left.
-    print(peter.travel(options[3], 3))
-
-    print(f"Amina: UGX {amina.purse.balance:,}; legs: {amina.completed_legs}")
-    print(f"Peter: UGX {peter.purse.balance:,}; legs: {peter.completed_legs}")
-    print("MRO (look left to right):")
-    for parent in CheerfulStudentBoda.__mro__:
-        print(parent.__name__)
-    print("Ending: flash drive recovered. The slides live to present another day.")
-
-
-
-
-@staticmethod
+    # Extension A3 (Save and continue later): plain-data JSON round trip.
+    @staticmethod
     def _choice_record(choice):
         choice_info = _CHOICE_FIELDS.get(type(choice))
         if choice_info is None:
@@ -218,7 +177,7 @@ def main():
             "remaining_ugx": balance,
             "history": [self._choice_record(choice) for choice in self._legs],
         }
-        with open(path, "w", encoding="utf-8") as save_file:
+        with open(path, "w", encoding="utf-8") as save_file:  # After all checks.
             json.dump(data, save_file, indent=2)
 
     @classmethod
@@ -226,8 +185,8 @@ def main():
         try:
             with open(path, "r", encoding="utf-8") as save_file:
                 data = json.load(save_file)
-        except FileNotFoundError as error:
-            raise ValueError(f"Journey save file not found: {path}") from error
+        except FileNotFoundError:
+            raise  # A missing file is reported as FileNotFoundError.
         except (json.JSONDecodeError, UnicodeDecodeError) as error:
             raise ValueError(f"Journey save file is not valid JSON: {path}") from error
 
@@ -247,12 +206,35 @@ def main():
             raise ValueError("Saved history must be a list.")
 
         restored_legs = [cls._choice_from_record(record) for record in history]
-        restored_journey = cls(student, balance)
+        restored_journey = cls(student, balance)  # New Journey, fresh purse.
         restored_journey._legs = restored_legs
         restored_journey.transport = restored_legs[-1] if restored_legs else None
         return restored_journey
 
+    save_json = save  # Names used by the A3 demo.
+    load_json = load
 
+
+def compare(options, distance):  # Function, parameter, loop: Week 1 tools.
+    for option in options:
+        print(option.describe())
+        print(f"Quote: UGX {option.quote_fare(distance):,}")  # Polymorphism.
+
+
+# Extension 3: adding cousin lift which is for free and has a different description
+class CousinLift:
+    def __init__(self, name):
+        self.name = name
+
+    def describe(self):
+        return f"{self.name} is giving you a free lift."
+
+    def quote_fare(self, distance):
+        return 0  # Free lift, no fare charged.
+
+
+# Extension A3: fixed table of choices that may be saved and rebuilt.
+# Labels come from this table only; nothing in a file is ever executed.
 _CHOICE_FIELDS = {
     Boda: ("boda", ("rider",)),
     Taxi: ("taxi", ("name",)),
@@ -268,6 +250,27 @@ _CHOICE_BUILDERS = {
 }
 
 
+def main():
+    print("=== THE MUKONO MISSION ===")
+    print("Amina left her flash drive in town. Her presentation is today!")
+    options = [Boda("Kato"), Taxi("Mukono taxi"),
+               CheerfulStudentBoda("Nambi"), WalkWithFriend(), CousinLift("Moris")]
+    compare(options, 3)  # The walk works without inheriting Transport.
+    amina = Journey("Amina", 5000)
+    peter = Journey("Peter", 2000)  # Independent object state.
+    print(amina.travel(options[4], 5))  # Cousin lift: free.
+    print(amina.travel(options[2], 3))  # Student boda: 2500.
+    print(amina.travel(options[1], 3))  # Swap the part: taxi back, 2000.
+    print(amina.travel(options[0], 3))  # Refused, only 500 left.
+    print(peter.travel(options[3], 3))
+
+    print(f"Amina: UGX {amina.purse.balance:,}; legs: {amina.completed_legs}")
+    print(f"Peter: UGX {peter.purse.balance:,}; legs: {peter.completed_legs}")
+    print("MRO (look left to right):")
+    for parent in CheerfulStudentBoda.__mro__:
+        print(parent.__name__)
+    print("Ending: flash drive recovered. The slides live to present another day.")
+
 
 if __name__ == "__main__":
-    main()
+    main()
