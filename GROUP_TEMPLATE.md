@@ -22,13 +22,13 @@
 |---|---|---|---|---|
 | A1: Values that can print, compare and add | Kasozi Joel: `FareMoney` with `__str__`, `__repr__`, `__eq__`, `__add__`, and the fare preview | [PR 6](https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/6) | `py -3 A1-b33494.py` | TO FILL |
 | A2: Errors the story can explain | Mukisa Emmanuel: the three custom exceptions and `StrictJourney.safe_travel` in `story.py`. Malish Emmanuel Abui: the A2 demo and the automated tests (`test_a2_strict_journey.py`) | [PR 7](https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/7) (Emmanuel's demo), [PR 8](https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/8) (Mukisa), TO FILL (A2 code in `story.py` and tests) | `py -3 "stories/02_mukono_mission/Demo a2 emmanuel b33239.py"` | `py -3 -m unittest discover -s stories/02_mukono_mission -p "test_*.py"` |
-| A3: Save the story and continue later | Wagonda Francis Precious: `Journey.save` / `Journey.load` and 19 automated tests. Omara Adrian Chrispus: the save and load demo | TO FILL (PRs for A3 not merged yet) | `py -3 stories/02_mukono_mission/demo_save_load_adrian_b33146.py` | `py -3 -m unittest discover -s stories/02_mukono_mission -p "test_*.py"` |
+| A3: Save the story and continue later | Wagonda Francis Precious: `Journey.save` / `Journey.load` and 19 automated tests. Omara Adrian Chrispus: the save and load demo | Francis: https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/9         Adrian : | `py -3 stories/02_mukono_mission/demo_save_load_adrian_b33146.py` | `py -3 -m unittest discover -s stories/02_mukono_mission -p "test_*.py"` |
 
 ## Individual later-topic contributions and reviews
 
 | Member | Later-topic responsibility | Personal branch | Commit link(s) | Merged later-topic PR(s) | Review/comment links on teammates' PRs |
 |---|---|---|---|---|---|
-| Wagonda Francis Precious | A3: save/load code and tests; restored the original `main()` | WAGONDA-FRANCIS-PRECIOUS-B33245 | TO FILL | TO FILL | TO FILL |
+| Wagonda Francis Precious | A3: save/load code and tests; restored the original `main()` | WAGONDA-FRANCIS-PRECIOUS-B33245 | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/commit/f8da54353969ec254483930149dd66a821ba9b87      https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/commit/053864ccde9cde9a8e14533f75697ac8e7a9c436   | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/9 | https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/8#issuecomment-6443912882   https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/7#issuecomment-6443876618   https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/6#issuecomment-6443983602 |
 | Malish Emmanuel Abui | A2: demo and automated tests | MALISH-EMMANUEL-ABUI-B33239-M25B13/032 | [commit f35ebca](https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/commit/f35ebca) | [PR 7](https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/7) | TO FILL |
 | Omara Chrispus Adrian | A3: save and load demo | OMARA-CHRISPUS-ADRIAN--B33146-M25B13/056 |https://github.com/slubambo/ucu-oop-class-examples/commit/2cb4d88af71a97982467cc84461629ad9d44a29e#diff-82ca9cebaef0fd14989189f17fd4a5cb9f40df25cf0799a0e37674c4bd9d116d|https://github.com/slubambo/ucu-oop-class-examples/pull/81 | TO FILL |
 | Kasozi Joel | A1: `FareMoney` and fare preview | joel-B33494 | [commit ee6bf79](https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/commit/ee6bf79) | [PR 6](https://github.com/MALISH-WEB/Mission-impossible-Mukono-Mission/pull/6) | TO FILL |
@@ -70,7 +70,6 @@ What worked well was keeping the original story unchanged and showing every feat
 
 Our main difficulty was working in one shared file. Someone added a cousin lift to the original main(), which broke the original expected output, and we had to restore it. Line endings (Windows and Linux) also made one pull request look like the whole file had changed, so we converted the files and checked the diff before merging.
 
-Remaining limitations: A1's FareMoney and preview_total are still in a separate file and are not yet a method of Journey. A2's StrictJourney is defined inside one demo file and is not yet in story.py, so the other A2 demo cannot import it. We plan to move both into story.py.
 
 Word count: 236
 
