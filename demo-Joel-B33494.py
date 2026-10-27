@@ -23,14 +23,25 @@ def cheapest(options, distance):
 
 
 def main():
-    #Tested in main() function to find the cheapest transport option for a distance of 3 km.
-        options = [WalkWithFriend()]
-        best = cheapest(options, 3)
-        if best is not None:
-            print(f"Cheapest option: {best.name}")
-            print(f"Fare: UGX {best.quote_fare(3):,}")
-        else:
-            print("No transport options available.")
+#Tested in main() function to find the cheapest transport option for a distance of 3 km.
+    options = [WalkWithFriend()]
+    best = cheapest(options, 3)
+    if best is not None:
+        print(f"Cheapest option: {best.name}")
+        print(f"Fare: UGX {best.quote_fare(3):,}")
+    else:
+        print("No transport options available.")
+
+    
+#Tested in main() function to find the cheapest transport option for a distance of 0 km.
+    options = [WalkWithFriend()]
+    best = cheapest(options, 0)
+    if best is not None:
+        print(f"Cheapest option: {best.name}")
+        print(f"Fare: UGX {best.quote_fare(0):,}")
+    else:
+        print("No transport options available.")
+            
             
 if __name__ == "__main__":
     main()
