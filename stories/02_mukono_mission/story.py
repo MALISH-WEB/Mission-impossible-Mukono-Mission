@@ -254,11 +254,10 @@ def main():
     print("=== THE MUKONO MISSION ===")
     print("Amina left her flash drive in town. Her presentation is today!")
     options = [Boda("Kato"), Taxi("Mukono taxi"),
-               CheerfulStudentBoda("Nambi"), WalkWithFriend(), CousinLift("Moris")]
+               CheerfulStudentBoda("Nambi"), WalkWithFriend()]
     compare(options, 3)  # The walk works without inheriting Transport.
     amina = Journey("Amina", 5000)
     peter = Journey("Peter", 2000)  # Independent object state.
-    print(amina.travel(options[4], 5))  # Cousin lift: free.
     print(amina.travel(options[2], 3))  # Student boda: 2500.
     print(amina.travel(options[1], 3))  # Swap the part: taxi back, 2000.
     print(amina.travel(options[0], 3))  # Refused, only 500 left.
@@ -273,4 +272,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main()
