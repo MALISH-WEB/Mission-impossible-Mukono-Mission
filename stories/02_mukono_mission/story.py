@@ -1,5 +1,4 @@
-"""The Mukono Mission: a forgotten flash drive and a transport decision.
-Run: python3 story.py. Fares and distances are invented teaching values.
+"""The Mukono mission: a forgotten flash drive and a transport decision.
 """
 from abc import ABC, abstractmethod
 
@@ -24,6 +23,15 @@ class TripPurse:
             return False
         self.balance = self.balance - fare
         return True
+
+    # Extension 2: Transport money top-up
+    def top_up(self, amount):
+        "A positive amount increases the balance and returns True. Zero or a negative amount returns False"
+        "without changing the balance. Using self.balance also keeps the existing property validation in effect."
+        if amount <= 0:
+            return False
+        self.balance = self.balance + amount
+        return True 
 
 
 # ACT 2: All transport must quote a fare, but the calculation can differ.
@@ -53,6 +61,13 @@ class Boda(Transport):  # IS-A Transport: single inheritance.
 class Taxi(Transport):  # Sibling classes: hierarchical inheritance.
     def quote_fare(self, distance):
         return 2000  # Flat classroom fare for this short route.
+
+
+# EXTENSION 1: Shuttle IS-A Transport, so compare() and Journey.travel()
+# can use it without any change. It charges one flat fare of UGX 1,500.
+class Shuttle(Transport):
+    def quote_fare(self, distance):
+        return 1500  # Flat classroom fare for any positive distance.
 
 
 class StudentBoda(Boda):  # Transport -> Boda -> StudentBoda: multilevel.
@@ -102,3 +117,57 @@ class Journey:
             return f"{self.student} travels by {transport.name}: UGX {fare:,}."
         return f"{self.student}: not enough money for {transport.name}."
 
+    # Extension 5 (Trip diary): read-only summary of the journey so far.
+    # It reads only _legs (completed trips) and the purse balance, so refused
+    # attempts are never counted and no money is spent or changed.
+    def diary(self):
+        money = f"Money left: UGX {self.purse.balance:,}."
+        if not self._legs:
+            return f"{self.student}'s diary: no completed legs. {money}"
+        names = ", ".join(leg.name for leg in self._legs)
+        return (f"{self.student}'s diary: {names}. "
+                f"Completed legs: {self.completed_legs}. {money}")
+
+
+def compare(options, distance):  # Function, parameter, loop: Week 1 tools.
+    for option in options:
+        print(option.describe())
+        print(f"Quote: UGX {option.quote_fare(distance):,}")  # Polymorphism.
+
+
+# Extension 3: adding cousin lift which is for free and has a different description
+class CousinLift:
+    def __init__(self, name):
+        self.name = name
+
+    def describe(self):
+        return f"{self.name} is giving you a free lift."
+
+    def quote_fare(self, distance):
+        return 0  # Free lift, no fare charged.
+
+
+def main():
+    print("=== THE MUKONO MISSION ===")
+    print("Amina left her flash drive in town. Her presentation is today!")
+    options = [Boda("Kato"), Taxi("Mukono taxi"),
+               CheerfulStudentBoda("Nambi"), WalkWithFriend(), CousinLift("Moris")]
+    compare(options, 3)  # The walk works without inheriting Transport.
+    amina = Journey("Amina", 5000)
+    peter = Journey("Peter", 2000)  # Independent object state.
+    print(amina.travel(options[4], 5))  # Cousin lift: free.
+    print(amina.travel(options[2], 3))  # Student boda: 2500.
+    print(amina.travel(options[1], 3))  # Swap the part: taxi back, 2000.
+    print(amina.travel(options[0], 3))  # Refused, only 500 left.
+    print(peter.travel(options[3], 3))
+
+    print(f"Amina: UGX {amina.purse.balance:,}; legs: {amina.completed_legs}")
+    print(f"Peter: UGX {peter.purse.balance:,}; legs: {peter.completed_legs}")
+    print("MRO (look left to right):")
+    for parent in CheerfulStudentBoda.__mro__:
+        print(parent.__name__)
+    print("Ending: flash drive recovered. The slides live to present another day.")
+
+
+if __name__ == "__main__":
+    main()
